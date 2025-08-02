@@ -1,26 +1,43 @@
-let display = document.getElementById("display");
-let currentInput = "0";
+const screen = document.getElementById("screen");
+let expression = "";
 
-function appendToDisplay(value) {
-  if (currentInput === "0" && value !== ".") {
-    currentInput = value;
-  } else {
-    currentInput += value;
-  }
-  display.textContent = currentInput;
+function press(val) {
+  if (expression === "0" || expression === "Error") expression = "";
+  expression += val;
+  updateScreen();
 }
 
-function clearDisplay() {
-  currentInput = "0";
-  display.textContent = currentInput;
+function updateScreen() {
+  screen.textContent = expression || "0";
+  autoResizeFont();
 }
 
 function calculate() {
   try {
-    currentInput = eval(currentInput).toString();
-    display.textContent = currentInput;
-  } catch (error) {
-    display.textContent = "False";
-    currentInput = "0";
+    expression = eval(expression).toString();
+  } catch {
+    expression = "Error";
+  }
+  updateScreen();
+}
+
+function clearScreen() {
+  expression = "";
+  updateScreen();
+}
+
+function deleteLast() {
+  expression = expression.slice(0, -1);
+  updateScreen();
+}
+
+function autoResizeFont() {
+  let fontSize = 32;
+  screen.style.fontSize = fontSize + "px";
+  while (screen.scrollWidth > screen.clientWidth && fontSize > 14) {
+    fontSize -= 1;
+    screen.style.fontSize = fontSize + "px";
   }
 }
+
+window.addEventListener("load", autoResizeFont);
